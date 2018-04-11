@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class ApiGen {
+    private final boolean cdi;
     private Parser parser = new Parser();
     private Path outputDirectory;
     private STGroup stGroup;
@@ -37,6 +38,7 @@ public class ApiGen {
         private STGroup stGroup;
         private String guiceModuleName;
         private String defaultPackageName;
+        private boolean cdi;
 
         /**
          * (required)
@@ -73,6 +75,16 @@ public class ApiGen {
         }
 
         /**
+         * @param cdi is used for specifyning to use {@link javax.enterprise.inject.Instance}
+         *            instead of {@link java.util.Optional} int TypeProvides
+         * @return this
+         */
+        public Builder withCDI(boolean cdi) {
+            this.cdi = cdi;
+            return this;
+        }
+
+        /**
          * Create a new instances of ApiGen with the built parameters.
          *
          * @return the new ApiGen instance.
@@ -94,6 +106,7 @@ public class ApiGen {
         stGroup = ( null == builder.stGroup )
             ? getDefaultSTGroup()
             : builder.stGroup;
+        cdi = builder.cdi;
     }
 
     /**
@@ -188,6 +201,7 @@ public class ApiGen {
                 STModel model = new STModel.Builder()
                     .withTypeEntry(entry)
                     .withReferenceTypes(referenceTypes)
+                    .withCDI(cdi)
                     .build();
                 model.validate();
 

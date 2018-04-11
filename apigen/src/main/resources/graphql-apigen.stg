@@ -138,17 +138,29 @@ import java.util.Arrays;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Named;
+<if(model.cdi)>
+import javax.enterprise.inject.Instance;
+<else>
 import java.util.Optional;
+<endif>
 
 @Named
 public class <model.name>TypeProvider implements Provider\<GraphQLObjectType> {
 <model.dataResolvers:{ it |
 <if(it.fieldType)>
     @Inject
+    <if(model.cdi)>
+    private Instance\<<it.fieldType>\> <it.fieldName>;
+    <else>
     private Optional\<<it.fieldType>\> <it.fieldName>;
+    <endif>
 <endif>}>
     @Inject
+    <if(model.cdi)>
+    private Instance\<<model.name>\> _impl;
+    <else>
     private Optional\<<model.name>\> _impl;
+    <endif>
     @Inject
     protected <model.name>TypeProvider() {}
     @Override
@@ -177,14 +189,15 @@ public class <model.name>TypeProvider implements Provider\<GraphQLObjectType> {
                       new MethodDataFetcher(
                           "<it.name>",
                           <if(it.args)><model.name>.<it.ucname>Args.class<else>null<endif>,
-                          _impl.orElse(null)),
-                      <it.dataResolver.fieldName>.orElse(null),
+                          <if(model.cdi)>_impl.get() == null?null:impl.get()<else>_impl.orElse(null)<endif>),
+                      <it.dataResolver.fieldName><if(model.cdi)>.get() == null?null:<it.dataResolver.fieldName>.get()<else>.orElse(null)<endif>,
                       <it.dataResolver.listDepth>))
 <else>
                 .dataFetcher(new MethodDataFetcher(
                     "<it.name>",
                     <if(it.args)><model.name>.<it.ucname>Args.class<else>null<endif>,
-                    _impl.orElse(null)))
+                    <if(model.cdi)>_impl.get() == null?null:impl.get()<else>_impl.orElse(null)<endif>))
+
 <endif>
                 .build())}>
             .build();

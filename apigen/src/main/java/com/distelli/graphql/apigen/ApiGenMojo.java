@@ -45,6 +45,9 @@ public class ApiGenMojo extends AbstractMojo {
     @Parameter(name="guiceModuleName")
     private String guiceModuleName;
 
+    @Parameter(name="cdi")
+    private boolean cdi;
+
     @Parameter(name="defaultPackageName", defaultValue = "com.graphql.generated")
     private String defaultPackageName;
 
@@ -84,6 +87,7 @@ public class ApiGenMojo extends AbstractMojo {
             ApiGen apiGen = new ApiGen.Builder()
                 .withOutputDirectory(outputDirectory.toPath())
                 .withGuiceModuleName(guiceModuleName)
+                .withCDI(cdi)
                 .withDefaultPackageName(defaultPackageName)
                 .build();
             PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver(cp);

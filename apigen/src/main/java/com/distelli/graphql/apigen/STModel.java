@@ -49,12 +49,18 @@ public class STModel {
     public static class Builder {
         private TypeEntry typeEntry;
         private Map<String, TypeEntry> referenceTypes;
+        private boolean cdi;
+
         public Builder withTypeEntry(TypeEntry typeEntry) {
             this.typeEntry = typeEntry;
             return this;
         }
         public Builder withReferenceTypes(Map<String, TypeEntry> referenceTypes) {
             this.referenceTypes = referenceTypes;
+            return this;
+        }
+        public Builder withCDI(boolean cdi) {
+            this.cdi = cdi;
             return this;
         }
         public STModel build() {
@@ -101,9 +107,11 @@ public class STModel {
     private List<String> imports;
     private Field idField;
     private boolean gotIdField = false;
+    private boolean cdi = false;
     private STModel(Builder builder) {
         this.typeEntry = builder.typeEntry;
         this.referenceTypes = builder.referenceTypes;
+        this.cdi = cdi;
     }
 
     public void validate() {
